@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="app">
+        <img id="imagen" src="https://www.airlines.org/wp-content/uploads/2020/10/HeaderImage-1.png" alt="avion">
+        <div class="container">
+
+            <div class="row" id="nav">
+                <div class="col-3">
+                    <div id="back">
+                        <img id="logo"
+                            src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Vietravel_Airlines_Logo.png"
+                            alt="logo">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div id="menu">
+                        <a class="btn btn-info" href="#">Planea tu viaje</a>
+                        <a class="btn btn-info" href="#">Paquetes turisticos</a>
+                        <a class="btn btn-info" href="#">Contacto</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-primary" id="pasaje" data-toggle="modal"
+                    data-target="#exampleModalCenter">
+                    Reservar un Pasaje
+                </button>
+            </div>
+            <div class="row">
+                <img class="galeria" src="img/como-encontrar-vuelos-baratos-1-1280x720.jpg" alt="img1">
+                <img class="galeria" src="img/piqsels.com-id-jfsdv.jpg" alt="img2">
+                <img class="galeria" src="img/vuelos-1.jpg" alt="img3">
+            </div>
+
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Encontra tu Vuelo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="Nombre">Nombre</label>
+                                    <input v-model="nombre" type="text" id="Nombre">
+                                </div>
+                                <div class="col-6">
+                                    <label for="ape">Apellido</label>
+                                    <input v-model="apellido" type="text" id="ape">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="dest">Destino</label>
+                                <select v-model="destinoElegido" name="" id="dest"
+                                    aria-placeholder="Seleccione un destino">
+                                    <option :value="destino" v-for="destino in destinos">{{destino}}</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <label for="fecha">Fecha</label>
+                                <input v-model="fechaElegida" type="date" name="fecha">
+                            </div>
+                            <div class="row">
+                                <label for="cantidad">Cantidad de Pasajeros</label>
+                                <input v-model="cantidadElegida" type="number" min="1" max="10" name="cantidad">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                            v-if="nombre != '' && apellido != '' && cantidadElegida <= 10 && cantidadElegida >= 1"
+                            class="btn btn-primary" data-dismiss="modal" @click="checkFlight">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal con vuelos-->
+        <div class="modal fade" id="vuelosModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">vuelos disponibles</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6" v-for="vuelo in vuelos">
+                                    <div class="card" style="width: 13rem;" @click="checkin(vuelos.indexOf(vuelo))">
+                                        <img class="card-img-top" src="img/vuelos-a-ninguna-parte2.jpg"
+                                            alt="Card image cap">
+                                        <div class="card-body">
+                                            <p class="card-text">n°de vuelo: {{vuelo.numeroDeVuelo}}</p>
+                                            <p class="card-text">hacia: {{vuelo.destino}}</p>
+                                            <p class="card-text">Lugares disponibles: {{vuelo.capacidad}}</p>
+                                            <p class="card-text">Dia: {{vuelo.fecha}}</p>
+                                            <p v-if="cantidadElegida > vuelo.capacidad" style="color: red;">Este Vuelo
+                                                no tiene suficiente lugar disponible!</p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal con vuelos-->
+        <div class="modal fade" id="pasajeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Check-In</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <img id="logo"
+                                    src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Vietravel_Airlines_Logo.png">
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>Vuelo n°: <b>{{pasaje.numeroDeVuelo}}</b></p>
+                                </div>
+                                <div class="col-6">
+                                    <p>Pasajero: <b>{{nombre}} {{apellido}}</b></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>Con destino a: <b>{{pasaje.destino}}</b></p>
+                                </div>
+                                <div class="col-6">
+                                    <p><b>{{pasaje.fecha}}</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!-- <script src="jquery-3.5.1.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

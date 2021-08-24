@@ -1,0 +1,52 @@
+#app{
+    color: white;
+    height: 100%;
+    width: 100vw;
+    background-color: grey;
+}
+#imagen{
+    width: 100vw;
+    height: 50vh;
+}
+#logo{
+    
+    width: 25vh;
+}
+#back{
+    width: 25vh;
+    position: relative;
+    bottom: 60px;
+    background-color: black;
+    border-radius: 7px;
+}
+#menu{
+    float: right;
+    /* display: inline-block; */
+    /* margin-inline: 10%;   */
+}
+#menu>a{
+    margin: 20px;
+}
+#nav{
+    background-color:  rgb(78, 78, 78);
+    border-radius: 20px;
+}
+#pasaje{
+    color: orange;
+    margin-top: 15px;
+    margin-left: 25%;
+    width: 50%;
+    height: 5rem;
+    margin-bottom: 20px;
+}
+#exampleModalCenter{
+    color: black;
+}
+.card{
+    color: black;
+}
+
+#pasajeModal{
+    color: black;
+}
+
