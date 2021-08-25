@@ -20,7 +20,7 @@ public class AirLineController {
     public VueloRepository vueloRepository;
 
 
-    @GetMapping("/searchFlight")
+    @GetMapping("/searchFlights")
     public Map<String, Object> getVueloDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
 
