@@ -8,14 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Entity
 public class Vuelo {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private Long id;
-
+    //No va lo de Generated ya que las ID's las hacemos nosotros
     private String flight;
 
     private String destination;
@@ -24,17 +23,14 @@ public class Vuelo {
 
     private LocalDate flightDate;
 
-    public Vuelo()  {}
+    public Vuelo() {
+    }
 
     public Vuelo(String flight, String destination, Integer vacancies, LocalDate flightDate) {
         this.flight = flight;
         this.destination = destination;
         this.vacancies = vacancies;
         this.flightDate = flightDate;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getFlight() {
@@ -68,4 +64,14 @@ public class Vuelo {
     public void setFlightDate(LocalDate flightDate) {
         this.flightDate = flightDate;
     }
+
+    public Map<String, Object> makeVueloDTO() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("destino", this.destination);
+        dto.put("capacidad", this.vacancies);
+        dto.put("fecha", this.flightDate);
+        dto.put("vuelo", this.flight);
+        return dto;
+    }
+
 }
