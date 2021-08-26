@@ -1,11 +1,7 @@
 package com.codeoftheweb.AirLine.Class;
 
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -15,62 +11,62 @@ import java.util.Map;
 public class Vuelo {
     @Id
     //No va lo de Generated ya que las ID's las hacemos nosotros
-    private String flight;
+    private String numeroDeVuelo;
 
-    private String destination;
+    private String destino;
 
-    private Integer vacancies;
+    private Integer capacidad;
 
-    private LocalDate flightDate;
+    private LocalDate fecha;
 
     public Vuelo() {
     }
 
     public Vuelo(String flight, String destination, Integer vacancies, LocalDate flightDate) {
-        this.flight = flight;
-        this.destination = destination;
-        this.vacancies = vacancies;
-        this.flightDate = flightDate;
+        this.numeroDeVuelo = flight;
+        this.destino = destination;
+        this.capacidad = vacancies;
+        this.fecha = flightDate;
     }
 
-    public String getFlight() {
-        return flight;
+    public String getNumeroDeVuelo() {
+        return numeroDeVuelo;
     }
 
-    public void setFlight(String flight) {
-        this.flight = flight;
+    public void setNumeroDeVuelo(String numeroDeVuelo) {
+        this.numeroDeVuelo = numeroDeVuelo;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getDestino() {
+        return destino;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDestino(String destino) {
+        this.destino = destino;
     }
 
-    public Integer getVacancies() {
-        return vacancies;
+    public Integer getCapacidad() {
+        return capacidad;
     }
 
-    public void setVacancies(Integer vacancies) {
-        this.vacancies = vacancies;
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
     }
 
-    public LocalDate getFlightDate() {
-        return flightDate;
+    public LocalDate getFecha() {
+        return fecha;
     }
 
-    public void setFlightDate(LocalDate flightDate) {
-        this.flightDate = flightDate;
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public Map<String, Object> makeVueloDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("destino", this.destination);
-        dto.put("capacidad", this.vacancies);
-        dto.put("fecha", this.flightDate);
-        dto.put("vuelo", this.flight);
+        dto.put("destino", this.destino);
+        dto.put("capacidad", this.capacidad);
+        dto.put("fecha", this.fecha);
+        dto.put("vuelo", this.numeroDeVuelo);
         return dto;
     }
 
