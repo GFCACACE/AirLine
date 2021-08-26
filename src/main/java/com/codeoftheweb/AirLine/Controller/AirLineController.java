@@ -40,6 +40,7 @@ public class AirLineController {
         if(destino != null && fecha != null) {
             return new ResponseEntity<>(vueloRepository.findAll().stream()
                     .filter(vuelo -> vuelo.getFecha().toString().equals(fecha) && vuelo.getDestino().equals(destino))
+                    //Otra alternativa al filtrado es el FindBy
                     .collect(Collectors.toList()), HttpStatus.ACCEPTED);
         }
         else if(destino != null){
