@@ -9,4 +9,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface VueloRepository extends JpaRepository<Vuelo, Long> {
 
 //Otra alternativa al filtrado es el FindBy
+// List<Vuelo> findAllByParámetro(Tipo nombre, Tipo nombre,...)
+
+    //All si es para todos; FindBy  para uno solo
 }

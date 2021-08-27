@@ -11,32 +11,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequestMapping("/api")
+// para cualquier tipo de petición
 @RestController
 public class AirLineController {
 
     @Autowired
     public VueloRepository vueloRepository;
 
-
-//    @GetMapping("/searchFlights")
-//    public Map<String, Object> getVueloDTO() {
-//        Map<String, Object> dto = new LinkedHashMap<>();
-//
-//        dto.put("vueloes", vueloRepository.findAll()
-//                .stream()
-//                .map(vuelo -> vuelo.makeVueloDTO())
-//                .collect(Collectors.toList())
-//        );
-//        return dto;
-//    }
-
-
+//tipos de peticiones:
+//@GetMapping
+//@PostMapping
+//@PutMapping
 
     @GetMapping("/searchFlights")
+    //para una petición de tipo get
     @ResponseBody
     public ResponseEntity<List<Vuelo>> getVuelo(@RequestParam(required = false)String destino,
                                                 @RequestParam(required = false) String fecha){
 
+        // localhost:8080/api/searcFlights?destino=
+
+//DateTimeFormatter format= DateTimeFormatter.ofPattern("yyyy-MM-dd")
         if(destino != null && fecha != null) {
             return new ResponseEntity<>(vueloRepository.findAll().stream()
                     .filter(vuelo -> vuelo.getFecha().toString().equals(fecha) && vuelo.getDestino().equals(destino))
@@ -53,16 +48,5 @@ public class AirLineController {
         }
             return new ResponseEntity<>(vueloRepository.findAll(), HttpStatus.ACCEPTED);
     }
-
-//    @GetMapping("/searchFlights")
-//    @ResponseBody
-//    public ResponseEntity<List<Vuelo>> getVuelo(@RequestParam(required = false)String destino,
-//                                                @RequestParam(required = false) LocalDate fecha ){
-//
-//        return ResponseEntity< >(vueloRepository.findAll()
-//                .stream().filter(vuelo -> vuelo.getDestination().equals(destino))
-//                .collect(Collectors.toList()), HttpStatus.ACCEPTED);
-//
-//
-//    }
+    //Con los if tengo un mayor control sobre las condiciones
 }
