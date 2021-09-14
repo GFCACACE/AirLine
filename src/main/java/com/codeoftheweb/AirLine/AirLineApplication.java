@@ -1,12 +1,31 @@
 package com.codeoftheweb.AirLine;
 
+import com.codeoftheweb.AirLine.Class.Player;
 import com.codeoftheweb.AirLine.Class.Vuelo;
+import com.codeoftheweb.AirLine.Repository.PlayerRepository;
 import com.codeoftheweb.AirLine.Repository.VueloRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 
 @SpringBootApplication
@@ -70,9 +89,98 @@ public class AirLineApplication {
 			vueloRepository.save(vuelo23);
 			vueloRepository.save(vuelo24);
 
-
-
-
 		};
+	}
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+}
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+	@Autowired
+	PlayerRepository playerRepository;
+
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(username -> {
+			Player player = playerRepository.findByUserName(username);
+			if (player != null) {
+				return new User(player.getUserName(), player.getPassword(),
+						AuthorityUtils.createAuthorityList("USER"));
+			} else {
+				throw new UsernameNotFoundException("Unknown user: " + username);
+			}
+		});
+	}
+}
+
+//@EnableWebSecurity
+//@Configuration
+//class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+//
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http.authorizeRequests().anyRequest().fullyAuthenticated().
+//				and().httpBasic();
+//	}
+//
+//}
+
+@Configuration
+@EnableWebSecurity
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	//Sirve para sobreescribir el comportamiento de un método para cierta clase que se ponga tal anotación
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+				.antMatchers("/web/multimedia/dale-boca.mp3").permitAll()
+				.antMatchers("/api/players").permitAll()
+				.antMatchers("/favicon.ico").permitAll()
+				.antMatchers("/api/login").permitAll()
+				.antMatchers("/login").permitAll()
+				.antMatchers("/web/**").permitAll()
+				.antMatchers("/api/games").permitAll()
+				.antMatchers("/api/**","/web/games.html").hasAuthority("USER")
+				.antMatchers("/h2-console/").permitAll()
+				.and().headers().frameOptions().disable()
+				.and().csrf().ignoringAntMatchers("/h2-console/")
+				.and()
+				.cors().disable();
+//Debemos restringir el game_view para que solo lo puedan ver los jugadores que compiten
+		;
+
+		http.formLogin()
+				.usernameParameter("name")
+				.passwordParameter("pwd")
+				.loginPage("/api/login");
+// Para anular el formulario que el mismo chrome nos muestra en vez de la página en sí
+		http.logout().logoutUrl("/api/logout");
+
+
+
+		// turn off checking for CSRF tokens
+		http.csrf().disable();
+
+		// if user is not authenticated, just send an authentication failure response
+		http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+		// if login is successful, just clear the flags asking for authentication
+		http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
+
+		// if login fails, just send an authentication failure response
+		http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+		// if logout is successful, just send a success response
+		http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+	}
+
+	private void clearAuthenticationAttributes(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		}
 	}
 }

@@ -19,8 +19,7 @@ public class Vuelo {
 
     private LocalDate fecha;
 
-    public Vuelo() {
-    }
+    public Vuelo() { }
 
     public Vuelo(String flight, String destination, Integer vacancies, LocalDate flightDate) {
         this.numeroDeVuelo = flight;
