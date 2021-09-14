@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,7 +38,7 @@ public class AirLineApplication {
 
 
 	@Bean
-	public CommandLineRunner initData(VueloRepository vueloRepository) {
+	public CommandLineRunner initData(VueloRepository vueloRepository, PlayerRepository playerRepository) {
 		return (args) -> {
 			Vuelo vuelo1 = new Vuelo("B542", "Mendoza", 5, LocalDate.of(2021,9,02));
 			Vuelo vuelo2 = new Vuelo("B545", "Mendoza", 4, LocalDate.of(2021,9,03));
@@ -89,6 +90,8 @@ public class AirLineApplication {
 			vueloRepository.save(vuelo23);
 			vueloRepository.save(vuelo24);
 
+			Player player1 = new Player("fede@gmail.com",passwordEncoder().encode("abcd"));
+			playerRepository.save(player1);
 		};
 	}
 	@Bean
@@ -136,14 +139,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	//Sirve para sobreescribir el comportamiento de un método para cierta clase que se ponga tal anotación
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/web/multimedia/dale-boca.mp3").permitAll()
-				.antMatchers("/api/players").permitAll()
-				.antMatchers("/favicon.ico").permitAll()
-				.antMatchers("/api/login").permitAll()
-				.antMatchers("/login").permitAll()
-				.antMatchers("/web/**").permitAll()
-				.antMatchers("/api/games").permitAll()
-				.antMatchers("/api/**","/web/games.html").hasAuthority("USER")
+
+				.antMatchers("/api/**","/web/index.html").hasAuthority("USER")
 				.antMatchers("/h2-console/").permitAll()
 				.and().headers().frameOptions().disable()
 				.and().csrf().ignoringAntMatchers("/h2-console/")
@@ -152,27 +149,22 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //Debemos restringir el game_view para que solo lo puedan ver los jugadores que compiten
 		;
 
-		http.formLogin()
-				.usernameParameter("name")
-				.passwordParameter("pwd")
-				.loginPage("/api/login");
-// Para anular el formulario que el mismo chrome nos muestra en vez de la página en sí
-		http.logout().logoutUrl("/api/logout");
+
 
 
 
 		// turn off checking for CSRF tokens
 		http.csrf().disable();
 
-		// if user is not authenticated, just send an authentication failure response
-		http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+//		// if user is not authenticated, just send an authentication failure response
+//		http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
 		// if login is successful, just clear the flags asking for authentication
 		http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
 
 		// if login fails, just send an authentication failure response
 		http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
-
+		http.formLogin().defaultSuccessUrl("/web/index.html#", true);
 		// if logout is successful, just send a success response
 		http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
 	}

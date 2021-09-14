@@ -1,6 +1,7 @@
 package com.codeoftheweb.AirLine.Controller;
 
 import com.codeoftheweb.AirLine.Class.Vuelo;
+import com.codeoftheweb.AirLine.Repository.PlayerRepository;
 import com.codeoftheweb.AirLine.Repository.VueloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,8 @@ public class AirLineController {
 
     @Autowired
     public VueloRepository vueloRepository;
-
+    @Autowired
+    public PlayerRepository playerRepository;
 
 //    @GetMapping("/searchFlights")
 //    public Map<String, Object> getVueloDTO() {

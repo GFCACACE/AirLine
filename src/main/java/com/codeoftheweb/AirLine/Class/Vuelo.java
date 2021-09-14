@@ -1,14 +1,17 @@
 package com.codeoftheweb.AirLine.Class;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 @Entity
 public class Vuelo {
+
     @Id
     //No va lo de Generated ya que las ID's las hacemos nosotros
     private String numeroDeVuelo;
@@ -18,6 +21,10 @@ public class Vuelo {
     private Integer capacidad;
 
     private LocalDate fecha;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="player")
+    private Player player; //Un objeto el cual se declara
 
     public Vuelo() { }
 

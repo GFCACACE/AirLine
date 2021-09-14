@@ -6,6 +6,8 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 @Entity
 public class Player {
 // Una clase publica se puede usar directamente en todas
@@ -17,9 +19,10 @@ public class Player {
     private long id;
     private String userName; //Variable que almacena el nombre
     private String password;
-
-
 // Un jugador solo tiene opción de unirse a varios gameplayers, que son una lista
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    private Set<Vuelo> vuelos;
+
     public Player() { }
 
     public Player(String userName, String password) {
